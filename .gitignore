@@ -1,0 +1,4 @@
+# .github/workflow/deploy.yml で作られる secrets ファイル
+cert.json
+
+node_modules

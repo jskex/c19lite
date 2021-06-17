@@ -1,0 +1,47 @@
+name: Deploy
+
+on:
+  workflow_dispatch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: npm install, build
+        run: |
+          npm install
+          npm run build
+
+#     - name: replace app.yaml
+#       run: |
+#         sed -i -e 's/$DB_USER/${{ secrets.DB_USER }}/g' app.yaml
+#         sed -i -e 's/$DB_PASSWORD/${{ secrets.DB_PASSWORD }}/g' app.yaml
+
+      - name: gcloud auth
+        run: |
+          echo '${{ secrets.GAE_DEPLOY_CERT }}' > cert.json
+          echo '対象のサービスアカウント'
+          gcloud auth activate-service-account --key-file cert.json
+          rm cert.json
+
+      - name: gcloud app deploy
+#       run: gcloud app deploy app.yaml --project 'プロジェクトID' -q
+        run: gcloud app deploy app.yaml --project 'covid19lite' -q
+        env:
+          CI: true
+
+      - name: git commit
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add .
+          git commit -m "deploy" -a
+          git push origin main

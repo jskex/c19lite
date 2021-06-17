@@ -1,0 +1,33 @@
+# [START app_yaml]
+runtime: nodejs10
+env: standard
+instance_class: F1
+#resources:
+#  cpu: .5
+#  memory_gb: .5
+
+automatic_scaling :
+  min_idle_instances  : 0
+  min_instances       : 0
+  max_idle_instances  : 1
+  max_instances       : 2
+  target_cpu_utilization : 0.75
+  target_throughput_utilization : 0.75
+  max_pending_latency : 3000ms
+
+handlers:
+  - url: /(.*\.(css|js|json|gif|ico|jpg|jpeg|png))$
+    static_files: public/\1
+    upload: public/.*\.(css|js|json|gif|ico|jpg|jpeg|png)$
+
+  - url: /sitemap\.xml
+    static_files: public/\sitemap\.xml
+    upload: sitemap\.xml
+
+  - url: /robots\.txt
+    static_files: public/\robots\.txt
+    upload: robots\.txt
+
+  - url: .*
+    script: auto
+# [END app_yaml]

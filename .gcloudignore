@@ -1,0 +1,9 @@
+# ignore all
+*
+
+# upload list
+!.
+!public/**
+!app.js
+!app.yaml
+!package.json
