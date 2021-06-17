@@ -1,0 +1,10 @@
+{
+  "name": "covid19lite",
+  "version": "1.0.0",
+  "description": "A light version of the Covid 19 chart.",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "jskex (https://twitter.com/jsk_yui)",
+  "license": "ISC"
+}
