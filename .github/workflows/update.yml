@@ -30,7 +30,7 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
 
-      - name: create all.json
+      - name: Create public/${{github.event.inputs.area}}/all.json
         uses: actions/github-script@v4
         env:
           ALL_JSON: '${{github.event.inputs.all_json}}'
@@ -39,7 +39,9 @@ jobs:
           script: |
             require('fs').writeFileSync('./'+process.env.AREA+'.json',process.env.ALL_JSON);
 
-      - name: git push
+ # './public/'+process.env.AREA+'/all.json'
+
+      - name: Commit "${{github.event.inputs.commit_message}}"
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
