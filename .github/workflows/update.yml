@@ -1,0 +1,48 @@
+name: Update
+
+on:
+  workflow_dispatch:
+    inputs:
+      all_json:
+        description: ''
+        required: true
+        default: '{}'
+      area:
+        description: ''
+        required: true
+        default: 'tokyo'
+      commit_message:
+        description: ''
+        required: true
+        default: ''
+
+jobs:
+  dispatch:
+    name: Workflow dispatch events
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: create all.json
+        uses: actions/github-script@v4
+        env:
+          ALL_JSON: '${{github.event.inputs.all_json}}'
+          AREA: '${{github.event.inputs.area}}'
+        with:
+          script: |
+            require('fs').writeFileSync('./'+process.env.AREA+'.json',process.env.ALL_JSON);
+
+      - name: git push
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add .
+          git commit -m "${{github.event.inputs.commit_message}}" -a
+          git push origin main
